@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+}
+
+group = 'qa'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.14.3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'com.codeborne:selenide:7.18.2'
+}
+
+test {
+    useJUnitPlatform()
+
+    def overriddenBaseUrl = System.getProperty('baseUrl')
+    if (overriddenBaseUrl != null && !overriddenBaseUrl.isBlank()) {
+        systemProperty 'baseUrl', overriddenBaseUrl
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs '-Dfile.encoding=UTF-8'
+}
